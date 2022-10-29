@@ -2,7 +2,10 @@
  * @name FriendsBackup
  * @author Jonathan#0008
  * @description Backup all your friends with a click of a button
- * @version 0.0.2
+ * @version 0.0.3
+ * @authorId 915321075582242846
+ * @authorLink https://github.com/jona799t
+ * @source https://github.com/jona799t/Better-Discord-Friend-Backup/blob/main/friends_backup.plugin.js
  */
 
 const fs = require('fs')
@@ -21,7 +24,8 @@ function refreshConfig() {
     catch(err) {
         window.friends_backup_config = {
             save_folder: `${directory}`,
-            backup_on_startup: true
+            backup_on_startup: true,
+            keep_old_backups: false
         }
         fs.writeFile(`${directory}friends_backup.config.json`, JSON.stringify(window.friends_backup_config), (err) => {
             if (err) throw err;
@@ -57,7 +61,20 @@ function friendBackup() {
             user_id: getElementByXpath(`//*[@id="all-tab"]/div[3]/div[1]/div[${i+1}]`).getAttribute("data-list-item-id").replace("people___", "")
         })
     }
+
+    if (window.friends_backup_config.keep_old_backups) {
+        try {
+            fs.rename(`${window.friends_backup_config.save_folder}/friends.json`, `${window.friends_backup_config.save_folder}/friends_${(Date.now() / 1000) | 0}.json`, function (err) {
+                if (err) throw err;
+                console.log('File Renamed.');
+            });
+        } catch (err) {
+
+        }
+    }
+
     fs.writeFile(`${window.friends_backup_config.save_folder}/friends.json`, JSON.stringify(friendsBackedup), err => {
+
         if (err) {
             BdApi.showToast("An error occurred trying to back up your friends", {type: "error"})
         } else {
@@ -186,7 +203,7 @@ module.exports = class FriendBackup {
                                 folder = event.target.files[0].path.split(folder + "/")[0] + folder
                                 window.friends_backup_config.save_folder = folder
                                 fs.writeFile(`${directory}friends_backup.config.json`, JSON.stringify(window.friends_backup_config), (err) => {
-                                    if (err) BDApi.error(err);
+                                    if (err) BDApi.alert(err);
                                     console.log('Saved friends_backup.config.json!');
                                 });
                                 currentFolder.textContent = "Current folder: " + window.friends_backup_config.save_folder
@@ -217,14 +234,39 @@ module.exports = class FriendBackup {
         backupOnStartUpInput.addEventListener("click", () => {
             window.friends_backup_config.backup_on_startup = !window.friends_backup_config.backup_on_startup
             fs.writeFile(`${directory}friends_backup.config.json`, JSON.stringify(window.friends_backup_config), (err) => {
-                if (err) BDApi.error(err);
+                if (err) BDApi.alert(err);
                 console.log('Saved friends_backup.config.json!');
             });
         })
 
         backupOnStartUpSetting.append(space, backupOnStartUpLabel, backupOnStartUpInput);
 
-        mySettingsPanel.append(currentFolder, selectFolderBtn, backupOnStartUpSetting, inputDiv);
+
+        const keyOldBackupSetting = document.createElement("div");
+        keyOldBackupSetting.classList.add("setting");
+
+
+        const keyOldBackupLabel = document.createElement("span")
+        keyOldBackupLabel.textContent = "Should old backups be kept?";
+        keyOldBackupLabel.className = "text";
+
+        const keyOldBackupInput = document.createElement("input");
+        keyOldBackupInput.type = "checkbox";
+        if (window.friends_backup_config.keep_old_backups) {
+            keyOldBackupInput.checked = true;
+        }
+        keyOldBackupInput.name = "backupOnStartUp";
+        keyOldBackupInput.addEventListener("click", () => {
+            window.friends_backup_config.keep_old_backups = !window.friends_backup_config.keep_old_backups
+            fs.writeFile(`${directory}friends_backup.config.json`, JSON.stringify(window.friends_backup_config), (err) => {
+                if (err) BDApi.alert(err);
+                console.log('Saved friends_backup.config.json!');
+            });
+        })
+
+        keyOldBackupSetting.append(keyOldBackupLabel, keyOldBackupInput);
+
+        mySettingsPanel.append(currentFolder, selectFolderBtn, backupOnStartUpSetting, inputDiv, keyOldBackupSetting);
 
         return mySettingsPanel;
     }
