@@ -2,7 +2,7 @@
  * @name FriendsBackup
  * @author Jonathan#0008
  * @description Backup all your friends with a click of a button
- * @version 0.0.1
+ * @version 0.0.2
  */
 
 const fs = require('fs')
@@ -83,7 +83,7 @@ module.exports = class FriendBackup {
                 BdApi.showToast("An error occurred trying to back up your friends", {type: "error"})
             }
         }
-        if (window.location.href.includes("channels/@me")) {
+        if (window.location.href.includes("channels/@me") && !window.location.href.includes("channels/@me/")) {
             const friendBackupBtn = document.createElement("div");
             friendBackupBtn.className = getElementByXpath('//*[@id="app-mount"]/div[2]/div/div[1]/div/div[2]/div/div[1]/div/div/main/section/div[1]/div[4]/div[6]').getAttribute("class");
             friendBackupBtn.textContent = "Friend Backup";
@@ -98,7 +98,7 @@ module.exports = class FriendBackup {
     }
 
     onSwitch() {
-        if (window.location.href.includes("channels/@me")) {
+        if (window.location.href.includes("channels/@me") && !window.location.href.includes("channels/@me/")) {
             refreshConfig()
             const friendBackupBtn = document.createElement("div");
             friendBackupBtn.className = getElementByXpath('//*[@id="app-mount"]/div[2]/div/div[1]/div/div[2]/div/div[1]/div/div/main/section/div[1]/div[4]/div[6]').getAttribute("class");
