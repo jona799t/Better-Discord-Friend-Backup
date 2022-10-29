@@ -1,4 +1,4 @@
-# Better-Discord-Friend-Backup
+# Discord Friend Backup (Better Discord plugin)
 Make an instant backup of your friends list you can access in case you lose your account
 
 ## Showcase
