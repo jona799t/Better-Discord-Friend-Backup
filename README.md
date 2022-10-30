@@ -3,9 +3,9 @@ Make an instant backup of your friends list you can access in case you lose your
 
 ## Showcase
 This plugin adds an extra button to the Friends bar in Discord
-![Friend Backup button](https://i.imgur.com/aeN7PYy.png)
+[![Friend Backup button](https://i.imgur.com/aeN7PYy.png)](#)
 
 ## Configuration
 To configure the plugin go into the Plugins tab in settings and click the gear on the FriendsBackup plugin.
-![Settings](https://i.imgur.com/GA2cLMa.png)  
+[![Settings](https://i.imgur.com/GA2cLMa.png)](#)  
 If you do not configure the plugin, friends will be saved in the plugins folder.
